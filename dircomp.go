@@ -8,7 +8,7 @@ import (
 	"path"
 	"sort"
 
-	"github.com/fbaube/fileutils"
+	FU "github.com/fbaube/fileutils"
 )
 
 var dirM = ""
@@ -63,11 +63,11 @@ func main() {
 		fmt.Fprintln(os.Stderr, "FAIL")
 		os.Exit(1)
 	}
-	fM := fileutils.MustOpenDir(dirM)
-	nM, fisM := fileutils.GetDirFiles(fM)
+	fM := FU.Must(FU.OpenDir(dirM))
+	nM, fisM := FU.GetDirFiles(fM)
 	fmt.Println("Found", nM, "files in", dirM)
-	fS := fileutils.MustOpenDir(dirS)
-	nS, fisS := fileutils.GetDirFiles(fS)
+	fS := FU.Must(FU.OpenDir(dirS))
+	nS, fisS := FU.GetDirFiles(fS)
 	fmt.Println("Found", nS, "files in", dirS)
 	if nM == 0 || nS == 0 {
 		fmt.Println("Nothing to do")
@@ -142,9 +142,9 @@ func dedupeByNames(dirM string, fisM []os.FileInfo, dirS string, fisS []os.FileI
 			// Gotta rebuild the file names and open them !
 			fnamM := path.Join(dirM, nameM)
 			fnamS := path.Join(dirS, nameS)
-			fM := fileutils.MustOpenFileRO(fnamM)
-			fS := fileutils.MustOpenFileRO(fnamS)
-			if fileutils.SameContents(fM, fS) {
+			fM := FU.Must(FU.OpenRO(fnamM))
+			fS := FU.Must(FU.OpenRO(fnamS))
+			if FU.SameContents(fM, fS) {
 				fmt.Printf("[%v,%v]:   <%v:%s> \t same name, same contents \n",
 					iM, iS, fiM.Size(), nameM)
 			} else {
@@ -198,9 +198,9 @@ func dedupeInDir(aDirPath string, aFIs []os.FileInfo) {
 		// Gotta rebuild the file names and open them !
 		fnam1 := path.Join(aDirPath, fi1.Name())
 		fnam2 := path.Join(aDirPath, fi2.Name())
-		f1 := fileutils.MustOpenFileRO(fnam1)
-		f2 := fileutils.MustOpenFileRO(fnam2)
-		if !fileutils.SameContents(f1, f2) {
+		f1 := FU.Must(FU.OpenRO(fnam1))
+		f2 := FU.Must(FU.OpenRO(fnam2))
+		if !FU.SameContents(f1, f2) {
 			continue
 		}
 		fmt.Println("Duplicate files in same directory:")
@@ -254,9 +254,9 @@ func dedupeByLengths(dirM string, fisM []os.FileInfo, dirS string, fisS []os.Fil
 		// Gotta rebuild the file names and open them !
 		fnamM := path.Join(dirM, nameM)
 		fnamS := path.Join(dirS, nameS)
-		fM := fileutils.MustOpenFileRO(fnamM)
-		fS := fileutils.MustOpenFileRO(fnamS)
-		if fileutils.SameContents(fM, fS) {
+		fM := FU.Must(FU.OpenRO(fnamM))
+		fS := FU.Must(FU.OpenRO(fnamS))
+		if FU.SameContents(fM, fS) {
 			fmt.Printf("[%v,%v]:   <%v:M:%s:s:%s> \t same contents \n",
 				iM, iS, sizeM, nameM, nameS)
 		} else {
